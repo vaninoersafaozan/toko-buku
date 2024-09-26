@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -28,25 +27,24 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::resource('books', BookController::class);
-Route::get('/books/create', [BookController::class, 'create'])->name('books.create')->middleware('auth');
-Route::post('/books', [BookController::class, 'store'])->name('books.store')->middleware('auth');
-Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit')->middleware('auth');
-Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update')->middleware('auth');
-Route::get('/books/{book}/detail', [BookController::class, 'show'])->name('books.show')->middleware('auth');
-
-Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index')->middleware('auth');
-Route::delete('/cart/remove/{book}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth');
-
-Route::post('/checkout', [PaymentController::class, 'checkout'])->middleware('auth');
-Route::post('/payment/callback', [PaymentController::class, 'handlePayment']);
-
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    Route::resource('books', BookController::class);
+    Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
+    Route::get('/books/{book}/detail', [BookController::class, 'show'])->name('books.show');
+    Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
+
+    Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
+    Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+    Route::delete('/cart/{cart}', [CartController::class, 'remove'])->name('cart.remove');
+    // Route::delete('/cart/remove/{bxook}', [CartController::class, 'remove'])->name('cart.remove');
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

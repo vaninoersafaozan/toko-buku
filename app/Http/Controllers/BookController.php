@@ -4,13 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all();
-        return inertia('Books/Index', ['books' => $books]);
+        $search = $request->input('search');
+
+        $books = Book::when($search, function ($query, $search) {
+            $query->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(6)
+        ->withQueryString();
+
+        return inertia('Books/Index', [
+            'books' => $books,
+            'search' => $search,
+        ]);
     }
 
     public function create()
@@ -20,17 +34,22 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'category' => 'required',
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category' => 'required|string|max:255',
             'stock' => 'required|integer|min:1',
-            'price' => 'required|integer',
+            'price' => 'required|integer|min:1',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
 
-        Book::create($request->all());
+        if ($request->hasFile('cover_image')) {
+            $validatedData['cover_image'] = $request->file('cover_image')->store('cover_images', 'public');
+        }
 
-        return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan');
+        Book::create($validatedData);
+
+        return redirect()->route('books.index')->with('message', 'Buku berhasil ditambahkan!');
     }
 
     public function edit(Book $book)
@@ -50,7 +69,7 @@ class BookController extends Controller
 
         $book->update($request->all());
 
-        return redirect()->route('books.index');
+        return redirect()->route('books.index')->with('message', 'Buku Dengan Judul: '. $book->title .' Berhasil Diupdate...');
     }
     
     public function show(Book $book)
@@ -58,9 +77,13 @@ class BookController extends Controller
         return inertia('Books/Show', ['book' => $book]);
     }
     
-    public function destroy(Book $book)
+    public function destroy(string $id)
     {
-        $book->delete();
-        return redirect()->route('books.index');
+        $books = Book::findOrFail($id);
+        $title = $books->title;
+        $books->delete();
+
+        return redirect()->route('books.index')
+        ->with('message', 'Buku Dengan Judul: ' . $title . ' Berhasil Dihapus');
     }
-}
+}   

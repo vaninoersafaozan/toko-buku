@@ -15,7 +15,7 @@ const Navbar = () => {
                     <Link href="/books" className="text-white">Buku</Link>
                     <Link href="/cart" className="text-white">Keranjang</Link>
                     <Link href="/profile" className="text-white">Profil</Link>
-                    <Link href="/logout" className="text-white">Logout</Link>
+                    <Link href={route('logout')} method="post" className="text-white">Logout</Link>
                 </div>
             </div>
         </nav>

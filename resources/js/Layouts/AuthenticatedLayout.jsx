@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
@@ -13,21 +12,29 @@ export default function Authenticated({ user, header, children }) {
             <nav className="bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
-                        <div className="flex">
-                            <div className="shrink-0 flex items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+                        {/* Bagian kiri: Logo "Toko Buku" */}
+                        <div className="shrink-0 flex items-center">
+                            <Link href="/" className="text-lg font-semibold text-gray-800">
+                                Toko Buku
+                            </Link>
+                        </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        {/* Bagian kanan: Menu navigasi dan dropdown user */}
+                        <div className="flex items-center">
+                            {/* Menu navigasi */}
+                            <div className="hidden space-x-8 sm:-my-px sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
+                                <NavLink href={route('books.index')} active={route().current('books.index')}>
+                                    Buku
+                                </NavLink>
+                                {/* <NavLink href={route('cart.index')} active={route().current('cart.index')}>
+                                    Keranjang
+                                </NavLink> */}
                             </div>
-                        </div>
 
-                        <div className="hidden sm:flex sm:items-center sm:ms-6">
+                            {/* Dropdown user */}
                             <div className="ms-3 relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
@@ -55,6 +62,7 @@ export default function Authenticated({ user, header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
+                                        <Dropdown.Link href={route('cart.index')}>Keranjang</Dropdown.Link>
                                         <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
                                             Log Out
@@ -64,6 +72,7 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                         </div>
 
+                        {/* Mobile button */}
                         <div className="-me-2 flex items-center sm:hidden">
                             <button
                                 onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
@@ -95,6 +104,12 @@ export default function Authenticated({ user, header, children }) {
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('books.index')} active={route().current('books.index')}>
+                            Buku
+                        </ResponsiveNavLink>
+                        {/* <ResponsiveNavLink href={route('cart.index')} active={route().current('cart.index')}>
+                            Keranjang
+                        </ResponsiveNavLink> */}
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
@@ -104,6 +119,7 @@ export default function Authenticated({ user, header, children }) {
                         </div>
 
                         <div className="mt-3 space-y-1">
+                            <ResponsiveNavLink href={route('cart.index')}>Keranjang</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
                             <ResponsiveNavLink method="post" href={route('logout')} as="button">
                                 Log Out

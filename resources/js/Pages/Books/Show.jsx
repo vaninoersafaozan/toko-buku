@@ -15,7 +15,7 @@ const BookDetail = ({ book }) => {
                     <Link 
                         href={route('cart.add', book.id)} 
                         method="post" 
-                        className="bg-green-500 text-white px-4 py-2 rounded mt-4 inline-block"
+                        className="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block"
                     >
                         Tambah ke Keranjang
                     </Link>

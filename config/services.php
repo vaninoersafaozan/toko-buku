@@ -14,12 +14,6 @@ return [
     |
     */
 
-    'midtrans' => [
-        'serverKey' => env('MIDTRANS_SERVER_KEY'),
-        'clientKey' => env('MIDTRANS_CLIENT_KEY'),
-        'isProduction' => env('MIDTRANS_ENVIRONMENT') === 'production',
-    ],
-
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
